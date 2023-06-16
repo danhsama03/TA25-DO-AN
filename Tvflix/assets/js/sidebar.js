@@ -2,13 +2,8 @@
 
 import { api_key, fetchDataFromServer } from "./api.js";
 
-
 export function sidebar() {
 
-  /**
-   * fetch all genres eg: [ { "id": "123", "name": "Action" } ]
-   * then change genre formate eg: { 123: "Action" }
-   */
   const genreList = {};
 
   fetchDataFromServer(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`, function ({ genres }) {
@@ -18,7 +13,6 @@ export function sidebar() {
 
     genreLink();
   });
-
 
   const sidebarInner = document.createElement("div");
   sidebarInner.classList.add("sidebar-inner");
@@ -44,16 +38,7 @@ export function sidebar() {
         onclick='getMovieList("with_original_language=bn", "Bengali")'>Bengali</a>
     
     </div>
-    
-    <div class="sidebar-footer">
-      <p class="copyright">
-        Copyright 2023 <a href="https://youtube.com/@codewithsadee">codewithsadee</a>
-      </p>
-    
-      <img src="./assets/images/tmdb-logo.svg" width="130" height="17" alt="the movie database logo">
-    </div>
   `;
-
 
   const genreLink = function () {
 
@@ -78,10 +63,7 @@ export function sidebar() {
 
 
   const toggleSidebar = function (sidebar) {
-    /**
-     * Toggle sidebar in mobile screen
-     */
-
+ 
     const sidebarBtn = document.querySelector("[menu-btn]");
     const sidebarTogglers = document.querySelectorAll("[menu-toggler]");
     const sidebarClose = document.querySelectorAll("[menu-close]");
@@ -93,11 +75,11 @@ export function sidebar() {
       overlay.classList.toggle("active");
     });
 
-    addEventOnElements(sidebarClose, "click", function () {
-      sidebar.classList.remove("active");
-      sidebarBtn.classList.remove("active");
-      overlay.classList.remove("active");
-    });
+    // addEventOnElements(sidebarClose, "click", function () {
+    //   sidebar.classList.remove("active");
+    //   sidebarBtn.classList.remove("active");
+    //   overlay.classList.remove("active");
+    // });
 
   }
 

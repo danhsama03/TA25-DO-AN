@@ -5,15 +5,10 @@ import { sidebar } from "./sidebar.js";
 import { createMovieCard } from "./movie-card.js";
 import { search } from "./search.js";
 
-
 const movieId = window.localStorage.getItem("movieId");
 const pageContent = document.querySelector("[page-content]");
 
-
-
 sidebar();
-
-
 
 const getGenres = function (genreList) {
   const newGenreList = [];
@@ -43,7 +38,6 @@ const getDirectors = function (crewList) {
   return directorList.join(", ");
 }
 
-// returns only trailers and teasers as array
 const filterVideos = function (videoList) {
   return videoList.filter(({ type, site }) => (type === "Trailer" || type === "Teaser") && site === "YouTube");
 }
@@ -171,7 +165,7 @@ const addSuggestedMovies = function ({ results: movieList }, title) {
   `;
 
   for (const movie of movieList) {
-    const movieCard = createMovieCard(movie); // called from movie_card.js
+    const movieCard = createMovieCard(movie);
 
     movieListElem.querySelector(".slider-inner").appendChild(movieCard);
   }
@@ -179,7 +173,5 @@ const addSuggestedMovies = function ({ results: movieList }, title) {
   pageContent.appendChild(movieListElem);
 
 }
-
-
 
 search();

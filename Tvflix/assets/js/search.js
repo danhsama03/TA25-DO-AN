@@ -3,7 +3,6 @@
 import { api_key, fetchDataFromServer } from "./api.js";
 import { createMovieCard } from "./movie-card.js";
 
-
 export function search() {
 
   const searchWrapper = document.querySelector("[search-wrapper]");
@@ -33,7 +32,7 @@ export function search() {
 
         searchWrapper.classList.remove("searching");
         searchResultModal.classList.add("active");
-        searchResultModal.innerHTML = ""; // remove old results
+        searchResultModal.innerHTML = ""; 
 
         searchResultModal.innerHTML = `
           <p class="label">Results for</p>

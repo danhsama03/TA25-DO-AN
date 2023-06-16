@@ -1,9 +1,5 @@
 'use strict';
 
-/**
- * import all components and functions
- */
-
 import { sidebar } from "./sidebar.js";
 import { api_key, imageBaseURL, fetchDataFromServer } from "./api.js";
 import { createMovieCard } from "./movie-card.js";
@@ -11,15 +7,7 @@ import { search } from "./search.js";
 
 const pageContent = document.querySelector("[page-content]");
 
-
-
 sidebar();
-
-
-
-/**
- * Home page sections (Top rated, Upcoming, Trending movies)
- */
 
 const homePageSections = [
   {
@@ -36,15 +24,8 @@ const homePageSections = [
   }
 ]
 
-
-
-/**
- * fetch all genres eg: [ { "id": "123", "name": "Action" } ]
- * then change genre formate eg: { 123: "Action" }
- */
 const genreList = {
 
-  // create genre string from genre_id eg: [23, 43] -> "Action, Romance".
   asString(genreIdList) {
     let newGenreList = [];
 
@@ -64,8 +45,6 @@ fetchDataFromServer(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api
 
   fetchDataFromServer(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=1`, heroBanner);
 });
-
-
 
 const heroBanner = function ({ results: movieList }) {
 
@@ -128,7 +107,6 @@ const heroBanner = function ({ results: movieList }) {
     `;
     banner.querySelector(".banner-slider").appendChild(sliderItem);
 
-
     const controlItem = document.createElement("button");
     controlItem.classList.add("poster-box", "slider-item");
     controlItem.setAttribute("slider-control", `${controlItemIndex}`);
@@ -146,21 +124,11 @@ const heroBanner = function ({ results: movieList }) {
 
   addHeroSlide();
 
-
-  /**
-   * fetch data for home page sections (top rated, upcoming, trending)
-   */
   for (const { title, path } of homePageSections) {
     fetchDataFromServer(`https://api.themoviedb.org/3${path}?api_key=${api_key}&page=1`, createMovieList, title);
   }
 
 }
-
-
-
-/**
- * Hero slider functionality
- */
 
 const addHeroSlide = function () {
 
@@ -189,8 +157,6 @@ const addHeroSlide = function () {
 
 }
 
-
-
 const createMovieList = function ({ results: movieList }, title) {
 
   const movieListElem = document.createElement("section");
@@ -216,7 +182,5 @@ const createMovieList = function ({ results: movieList }, title) {
   pageContent.appendChild(movieListElem);
 
 }
-
-
 
 search();

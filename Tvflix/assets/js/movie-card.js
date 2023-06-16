@@ -2,11 +2,6 @@
 
 import { imageBaseURL } from "./api.js";
 
-
-/**
- * movie card
- */
-
 export function createMovieCard(movie) {
 
   const {
