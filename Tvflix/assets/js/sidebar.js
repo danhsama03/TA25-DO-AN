@@ -6,13 +6,23 @@ export function sidebar() {
 
   const genreList = {};
 
-  fetchDataFromServer(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`, function ({ genres }) {
-    for (const { id, name } of genres) {
-      genreList[id] = name;
+  const fetchGenreList = async () => {
+    try {
+      const response = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`);
+      const data = await response.json();
+  
+      for (const { id, name } of data.genres) {
+        genreList[id] = name;
+      }
+  
+      genreLink();
+    } catch (error) {
+      console.error(error);
     }
-
-    genreLink();
-  });
+  };
+  
+  fetchGenreList();
+  
 
   const sidebarInner = document.createElement("div");
   sidebarInner.classList.add("sidebar-inner");
@@ -66,20 +76,13 @@ export function sidebar() {
  
     const sidebarBtn = document.querySelector("[menu-btn]");
     const sidebarTogglers = document.querySelectorAll("[menu-toggler]");
-    const sidebarClose = document.querySelectorAll("[menu-close]");
     const overlay = document.querySelector("[overlay]");
 
     addEventOnElements(sidebarTogglers, "click", function () {
       sidebar.classList.toggle("active");
       sidebarBtn.classList.toggle("active");
       overlay.classList.toggle("active");
-    });
-
-    // addEventOnElements(sidebarClose, "click", function () {
-    //   sidebar.classList.remove("active");
-    //   sidebarBtn.classList.remove("active");
-    //   overlay.classList.remove("active");
-    // });
+    });b 
 
   }
 

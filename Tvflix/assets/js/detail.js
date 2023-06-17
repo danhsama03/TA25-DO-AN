@@ -11,32 +11,23 @@ const pageContent = document.querySelector("[page-content]");
 sidebar();
 
 const getGenres = function (genreList) {
-  const newGenreList = [];
-
-  for (const { name } of genreList) newGenreList.push(name);
-
-  return newGenreList.join(", ");
-}
+  return genreList.map(genre => genre.name).join(", ");
+};
 
 const getCasts = function (castList) {
-  const newCastList = [];
-
-  for (let i = 0, len = castList.length; i < len && i < 10; i++) {
-    const { name } = castList[i];
-    newCastList.push(name);
-  }
-
+  const newCastList = castList.slice(0, 10).map(cast => cast.name);
   return newCastList.join(", ");
-}
+};
 
 const getDirectors = function (crewList) {
-  const directors = crewList.filter(({ job }) => job === "Director");
+  return crewList.reduce((directorList, { job, name }) => {
+    if (job === "Director") {
+      directorList.push(name);
+    }
+    return directorList;
+  }, []).join(", ");
+};
 
-  const directorList = [];
-  for (const { name } of directors) directorList.push(name);
-
-  return directorList.join(", ");
-}
 
 const filterVideos = function (videoList) {
   return videoList.filter(({ type, site }) => (type === "Trailer" || type === "Teaser") && site === "YouTube");
@@ -146,32 +137,32 @@ fetchDataFromServer(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${api
 
 });
 
-
-
 const addSuggestedMovies = function ({ results: movieList }, title) {
-
   const movieListElem = document.createElement("section");
   movieListElem.classList.add("movie-list");
-  movieListElem.ariaLabel = "You May Also Like";
+  movieListElem.setAttribute("aria-label", "You May Also Like");
 
-  movieListElem.innerHTML = `
-    <div class="title-wrapper">
-      <h3 class="title-large">You May Also Like</h3>
-    </div>
-    
-    <div class="slider-list">
-      <div class="slider-inner"></div>
-    </div>
-  `;
+  const titleWrapper = document.createElement("div");
+  titleWrapper.classList.add("title-wrapper");
+  const titleLarge = document.createElement("h3");
+  titleLarge.classList.add("title-large");
+  titleLarge.textContent = "You May Also Like";
+  titleWrapper.appendChild(titleLarge);
+  movieListElem.appendChild(titleWrapper);
+
+  const sliderList = document.createElement("div");
+  sliderList.classList.add("slider-list");
+  const sliderInner = document.createElement("div");
+  sliderInner.classList.add("slider-inner");
+  sliderList.appendChild(sliderInner);
+  movieListElem.appendChild(sliderList);
 
   for (const movie of movieList) {
     const movieCard = createMovieCard(movie);
-
-    movieListElem.querySelector(".slider-inner").appendChild(movieCard);
+    sliderInner.appendChild(movieCard);
   }
 
   pageContent.appendChild(movieListElem);
-
-}
+};
 
 search();

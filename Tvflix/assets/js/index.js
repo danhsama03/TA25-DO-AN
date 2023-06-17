@@ -30,7 +30,7 @@ const genreList = {
     let newGenreList = [];
 
     for (const genreId of genreIdList) {
-      this[genreId] && newGenreList.push(this[genreId]); // this == genreList;
+      this[genreId] && newGenreList.push(this[genreId]);
     }
 
     return newGenreList.join(", ");
@@ -47,23 +47,24 @@ fetchDataFromServer(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api
 });
 
 const heroBanner = function ({ results: movieList }) {
-
   const banner = document.createElement("section");
-  banner.classList.add("banner");
-  banner.ariaLabel = "Popular Movies";
+  banner.className = "banner";
+  banner.setAttribute("aria-label", "Popular Movies");
 
-  banner.innerHTML = `
-    <div class="banner-slider"></div>
-    
-    <div class="slider-control">
-      <div class="control-inner"></div>
-    </div>
-  `;
+  const bannerSlider = document.createElement("div");
+  bannerSlider.className = "banner-slider";
+  banner.appendChild(bannerSlider);
+
+  const sliderControl = document.createElement("div");
+  sliderControl.className = "slider-control";
+  const controlInner = document.createElement("div");
+  controlInner.className = "control-inner";
+  sliderControl.appendChild(controlInner);
+  banner.appendChild(sliderControl);
 
   let controlItemIndex = 0;
 
-  for (const [index, movie] of movieList.entries()) {
-
+  movieList.forEach((movie, index) => {
     const {
       backdrop_path,
       title,
@@ -76,59 +77,45 @@ const heroBanner = function ({ results: movieList }) {
     } = movie;
 
     const sliderItem = document.createElement("div");
-    sliderItem.classList.add("slider-item");
+    sliderItem.className = "slider-item";
     sliderItem.setAttribute("slider-item", "");
-
     sliderItem.innerHTML = `
-      <img src="${imageBaseURL}w1280${backdrop_path}" alt="${title}" class="img-cover" loading=${index === 0 ? "eager" : "lazy"
-      }>
-      
+      <img src="${imageBaseURL}w1280${backdrop_path}" alt="${title}" class="img-cover" loading="${index === 0 ? "eager" : "lazy"}">
       <div class="banner-content">
-      
         <h2 class="heading">${title}</h2>
-      
         <div class="meta-list">
           <div class="meta-item">${release_date?.split("-")[0] ?? "Not Released"}</div>
-      
           <div class="meta-item card-badge">${vote_average.toFixed(1)}</div>
         </div>
-      
         <p class="genre">${genreList.asString(genre_ids)}</p>
-      
         <p class="banner-text">${overview}</p>
-      
         <a href="./detail.html" class="btn" onclick="getMovieDetail(${id})">
           <img src="./assets/images/play_circle.png" width="24" height="24" aria-hidden="true" alt="play circle">
-      
           <span class="span">Watch Now</span>
         </a>
-      
       </div>
     `;
-    banner.querySelector(".banner-slider").appendChild(sliderItem);
+    bannerSlider.appendChild(sliderItem);
 
     const controlItem = document.createElement("button");
-    controlItem.classList.add("poster-box", "slider-item");
-    controlItem.setAttribute("slider-control", `${controlItemIndex}`);
-
+    controlItem.className = "poster-box slider-item";
+    controlItem.setAttribute("slider-control", controlItemIndex);
     controlItemIndex++;
-
     controlItem.innerHTML = `
       <img src="${imageBaseURL}w154${poster_path}" alt="Slide to ${title}" loading="lazy" draggable="false" class="img-cover">
     `;
-    banner.querySelector(".control-inner").appendChild(controlItem);
-
-  }
+    controlInner.appendChild(controlItem);
+  });
 
   pageContent.appendChild(banner);
 
   addHeroSlide();
 
-  for (const { title, path } of homePageSections) {
+  homePageSections.forEach(({ title, path }) => {
     fetchDataFromServer(`https://api.themoviedb.org/3${path}?api_key=${api_key}&page=1`, createMovieList, title);
-  }
+  });
+};
 
-}
 
 const addHeroSlide = function () {
 
@@ -145,42 +132,44 @@ const addHeroSlide = function () {
     lastSliderItem.classList.remove("active");
     lastSliderControl.classList.remove("active");
 
-    // `this` == slider-control
-    sliderItems[Number(this.getAttribute("slider-control"))].classList.add("active");
+    const controlIndex = Number(this.getAttribute("slider-control"));
+    sliderItems[controlIndex].classList.add("active");
     this.classList.add("active");
 
-    lastSliderItem = sliderItems[Number(this.getAttribute("slider-control"))];
+    lastSliderItem = sliderItems[controlIndex];
     lastSliderControl = this;
-  }
+  };
 
   addEventOnElements(sliderControls, "click", sliderStart);
 
 }
 
 const createMovieList = function ({ results: movieList }, title) {
-
   const movieListElem = document.createElement("section");
   movieListElem.classList.add("movie-list");
-  movieListElem.ariaLabel = `${title}`;
+  movieListElem.setAttribute("aria-label", title);
 
-  movieListElem.innerHTML = `
-    <div class="title-wrapper">
-      <h3 class="title-large">${title}</h3>
-    </div>
-    
-    <div class="slider-list">
-      <div class="slider-inner"></div>
-    </div>
-  `;
+  const titleWrapper = document.createElement("div");
+  titleWrapper.classList.add("title-wrapper");
+  const titleLarge = document.createElement("h3");
+  titleLarge.classList.add("title-large");
+  titleLarge.textContent = title;
+  titleWrapper.appendChild(titleLarge);
+  movieListElem.appendChild(titleWrapper);
+
+  const sliderList = document.createElement("div");
+  sliderList.classList.add("slider-list");
+  const sliderInner = document.createElement("div");
+  sliderInner.classList.add("slider-inner");
+  sliderList.appendChild(sliderInner);
+  movieListElem.appendChild(sliderList);
 
   for (const movie of movieList) {
-    const movieCard = createMovieCard(movie); // called from movie_card.js
-
-    movieListElem.querySelector(".slider-inner").appendChild(movieCard);
+    const movieCard = createMovieCard(movie);
+    sliderInner.appendChild(movieCard);
   }
 
   pageContent.appendChild(movieListElem);
-
-}
+};
 
 search();

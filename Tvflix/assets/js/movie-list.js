@@ -39,29 +39,6 @@ fetchDataFromServer(`https://api.themoviedb.org/3/discover/movie?api_key=${api_k
   }
 
   pageContent.appendChild(movieListElem);
-
-  document.querySelector("[load-more]").addEventListener("click", function () {
-
-    if (currentPage >= totalPages) {
-      this.style.display = "none"; 
-      return;
-    }
-
-    currentPage++;
-    this.classList.add("loading"); 
-
-    fetchDataFromServer(`https://api.themoviedb.org/3/discover/movie?api_key=${api_key}&sort_by=popularity.desc&include_adult=false&page=${currentPage}&${urlParam}`, ({ results: movieList }) => {
-      this.classList.remove("loading"); 
-
-      for (const movie of movieList) {
-        const movieCard = createMovieCard(movie);
-
-        movieListElem.querySelector(".grid-list").appendChild(movieCard);
-      }
-    });
-
-  });
-
 });
 
 search();
